@@ -16,4 +16,6 @@ RUN pip install django
 WORKDIR /root/packages/MySQL-python-1.2.5
 RUN python setup.py install
 
+RUN rm -rf /root/packages
+
 WORKDIR /root

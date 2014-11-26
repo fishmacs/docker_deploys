@@ -15,21 +15,15 @@ framework.
 """
 import os
 import sys
-import site
 from os.path import abspath, dirname, join
-
-site.addsitedir('/var/lib/virtualenvs/yuhua/lib/python2.7/site-packages')
 
 dname = abspath(dirname(dirname(__file__)))
 sys.path.insert(0, dname)
 sys.path.insert(0, join(dname, 'cms'))
 sys.path.insert(2, dirname(dname))
 
+os.environ['PYTHON_EGG_CACHE'] = '/var/www/yuhua/.python-eggs'
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bookbag_admin.settings")
-
-# Activate your virtual env
-activate_env = os.path.expanduser("/var/lib/virtualenvs/yuhua/bin/activate_this.py")
-execfile(activate_env, dict(__file__=activate_env))
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
