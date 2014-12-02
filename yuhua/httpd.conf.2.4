@@ -380,16 +380,7 @@ IncludeOptional conf.d/*.conf
     # CustomLog logs/yuhua_access_log common
     # ErrorLog logs/yuhua_error_log
 
-    Alias /static/ /var/www/yuhua/bookbag/portal/static/
-    Alias /media/ /var/www/yuhua/bookbag/media/
-    Alias /update/ /var/www/bookbag/update/
-    
-    <Directory /var/www/yuhua/bookbag/portal/static>
-        Order deny,allow
-        Allow from all
-    </Directory>
-
-    <Directory /var/www/yuhua/bookbag/media>
+    <Directory /var/www/yuhua/bookbag>
         Order deny,allow
         Allow from all
     </Directory>
@@ -400,15 +391,23 @@ IncludeOptional conf.d/*.conf
     WSGIPassAuthorization On
     #WSGIApplicationGroup %{GLOBAL}
 
-    <Directory /var/www/yuhua/bookbag>
+    Alias /static/ /var/www/yuhua/bookbag/portal/static/
+    Alias /media/ /var/www/yuhua/bookbag/media/
+    Alias /update/ /var/www/yuhua/bookbag/update/
+    
+    <Directory /var/www/yuhua/bookbag/portal/static>
+        Order deny,allow
+        Allow from all
+    </Directory>
+
+    <Directory /var/www/yuhua/bookbag/media>
         Order deny,allow
         Allow from all
     </Directory>
        
-    <Directory /var/www/bookbag/update>
-	Options
-	Order deny,allow
-	Allow from all
+    <Directory /var/www/yuhua/bookbag/update>
+       	Order deny,allow
+        Allow from all
     </Directory>
  
 	# Possible values include: debug, info, notice, warn, error, crit,
