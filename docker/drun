@@ -1,0 +1,57 @@
+#! /bin/bash
+
+if [ -z $1 ]; then
+    echo "Usage: drun image_name"
+else
+    case "$1" in
+        redis)
+            args="-p 6379:6379 -p 9022:22 --name redis ${@:2}"
+            img="redis";;
+        ketaow)
+            path="/home/wzhao/sites/ketao/www"
+            args="-p 8002:8000 -p 80:80 -p 8025:22 --link db:db --link ketao_apollo:apollo --link redis:redis -v $path/www:/var/www -v $path/etc:/etc/httpd/conf -v $path/log:/var/log/httpd -v $path/courseware_doc:/mnt/courseware_doc -v /home/wzhao/ds:/root/ds"
+            img="ketao/web";;
+        ketaosh)
+            path="/home/wzhao/sites/ketao/www"
+            args="-p 8002:8000 -p 80:80 -p 8025:22 --link db:db --link ketao_apollo:apollo --link redis:redis -v $path/www:/var/www -v $path/etc:/etc/httpd/conf -v $path/log:/var/log/httpd -v $path/courseware_doc:/mnt/courseware_doc -v /home/wzhao/ds:/root/ds"
+            img="ketao/web"
+            cmd="/bin/bash";;
+        ketaomq)
+            path="/home/wzhao/sites/ketao/apollo"
+            args="-e JAVA_HOME=/usr/lib/jvm/jre-1.6.0 -p 61713:61613 -p 61714:61614 -p 61723:61623 -p 61724:61624 -p 61781:61681 -v $path/etc:/var/lib/mybroker/etc -v $path/log:/var/lib/mybroker/log --name ketao_apollo"
+            img="palmtao/apollo:installed"
+            cmd="/var/lib/mybroker/bin/apollo-broker run";;
+        db)
+            args="-p 3306:3306 -p 8026:22 -v /var/lib/mysql/yuhua:/var/lib/mysql -v /var/log/palmtao/yuhua/db:/var/log --name db"
+            img="mysql:sshd";;
+            #cmd='/bin/bash -c "service mysqld start && tail -f /var/log/mysqld.log"';;
+        yuhuaw)
+            args="-p 8001:80 -p 8000:8000 -p 8023:22 --link db:db --link apollo:apollo -v /home/wzhao/www/yuhua:/var/www/yuhua -v /var/log/palmtao/yuhua/web:/var/log/httpd -v /etc/httpd/conf/yuhua:/etc/httpd/conf -v /home/wzhao/ds:/root/ds -v /mnt/courseware_yuhua:/mnt/courseware_yuhua"
+            img="yuhua/web";;
+        yuhuasync)
+            args="-p 8024:22 --link db:db --link apollo:apollo -v /home/wzhao/www/yuhua/bookbag:/var/lib/bookbag -v /home/wzhao/ds/yuhua_sync:/root/sync"
+            img="palmtao/syncd";;
+        yuhuamq)
+            args="-e JAVA_HOME=/usr/lib/jvm/jre-1.6.0 -p 61613:61613 -p 61614:61614 -p 61623:61623 -p 61624:61624 -p 61681:61681 -v /var/log/palmtao/yuhua/apollo:/var/lib/mybroker/log --name apollo"
+            img="palmtao/apollo:installed"
+            cmd="/var/lib/mybroker/bin/apollo-broker run";;
+        voicew)
+            args="-p 8003:80 -p 8022:22 -v /home/wzhao/www/voice:/var/www/voice -v /var/log/palmtao/voice/web:/var/log/httpd -v /etc/httpd/conf/voice:/etc/httpd/conf -v /home/wzhao/ds:/root/ds"
+            img="palmtao/voice";;
+        sshd6)
+            args="-p 8027:22"
+            img="cs6sshd"
+            cmd="/usr/sbin/sshd -D";;
+        smtp)
+            args="-p 25:25 --name smtp"
+            img="smtp";;
+            #cmd="service postfix start && tail -f /var/log/maillog";;
+        *)
+            echo "Unknown image name: $1"
+            exit;;
+    esac
+    sudo docker run -d -e TZ=$TZ -e HOME= $args $img $cmd
+fi
+
+# /bin/sh /usr/bin/mysqld_safe --datadir=/var/lib/mysql --socket=/var/lib/mysql/mysql.sock --pid-file=/var/run/mysqld/mysqld.pid --basedir=/usr --user=mysql
+#-v $path/etc/conf.d:/etc/httpd/conf.d -v $path/etc/conf.modules.d:/etc/httpd/conf.modules.d 
