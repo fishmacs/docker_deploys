@@ -8,8 +8,12 @@ dockers = dockers.map do |s|
   s.split(/\s{2,}/)
 end
 
+# targets = dockers.select do |d|
+#   d[4] =~ /^Exited/
+# end
+
 targets = dockers.select do |d|
-  d[4] =~ /^Exited/
+  d[4] !~ /^Up/
 end
 
 targets.each do |d|
