@@ -1,0 +1,41 @@
+apollo:
+  image: apollo
+  environment:
+    JAVA_HOME: /usr/lib/jvm/jre-1.6.0
+  ports:
+    - "61613:61613"
+    - "61614:61614"
+    - "61623:61623"
+    - "61624:61624"
+    - "61681:61681"
+  volumes:
+    - apollo/log:/var/lib/mybroker/log
+  command: /var/lib/mybroker/bin/apollo-broker run
+
+web:
+  image: yuhua/web
+  ports:
+    - "443:443"
+    - "8023:22"
+  volumes:
+    - ./www/etc:/etc/httpd/conf
+    - ./www/log:/var/log/httpd
+    - ./www/courseware_doc:/mnt/courseware_doc
+    - ./www/www:/var/www
+    - /home/wzhao/ds:/root/ds
+  links:
+    - apollo
+  external_links:
+    - ketao_db_1:db
+
+daemon:
+  image: yuhua/sync
+  ports:
+    - "8024:22"
+  volumes:
+    - www/www/bookbag:/var/lib/bookbag
+    - /home/wzhao/ds/yuhua_sync:/root/sync
+  links:
+    - apollo
+  external_links:
+    - ketao_db_1:db

@@ -5,11 +5,11 @@ if [ -z $1 ]; then
 else
     case "$1" in
         redis)
-            args="-p 6379:6379 -p 9022:22 --name redis ${@:2}"
+            args="-p 6379:6379 -p 9022:22 --name redis"
             img="redis";;
         ketaow)
             path="/home/wzhao/sites/ketao/www"
-            args="-p 8002:8000 -p 80:80 -p 8025:22 --link db:db --link ketao_apollo:apollo --link redis:redis -v $path/www:/var/www -v $path/etc:/etc/httpd/conf -v $path/log:/var/log/httpd -v $path/courseware_doc:/mnt/courseware_doc -v /home/wzhao/ds:/root/ds"
+            args="-p 423:443 -p 80:80 -p 8025:22 --link db:db --link ketao_apollo:apollo --link redis:redis -v $path/www:/var/www -v $path/etc:/etc/httpd/conf -v $path/log:/var/log/httpd -v $path/courseware_doc:/mnt/courseware_doc -v /home/wzhao/ds:/root/ds"
             img="ketao/web";;
         ketaosh)
             path="/home/wzhao/sites/ketao/www"
@@ -19,21 +19,29 @@ else
         ketaomq)
             path="/home/wzhao/sites/ketao/apollo"
             args="-e JAVA_HOME=/usr/lib/jvm/jre-1.6.0 -p 61713:61613 -p 61714:61614 -p 61723:61623 -p 61724:61624 -p 61781:61681 -v $path/etc:/var/lib/mybroker/etc -v $path/log:/var/lib/mybroker/log --name ketao_apollo"
-            img="palmtao/apollo:installed"
+            img="apollo"
             cmd="/var/lib/mybroker/bin/apollo-broker run";;
+        ketaodemon)
+            path="/home/wzhao/sites/ketao/www/www/cloudedu"
+            args="-p 8027:22 --link db:db --link ketao_apollo:apollo -v $path/bin:/var/lib/ketao"
+            img="pydaemon"
+            cmd="/var/lib/ketao/pydaemon";;
         db)
-            args="-p 3306:3306 -p 8026:22 -v /var/lib/mysql/yuhua:/var/lib/mysql -v /var/log/palmtao/yuhua/db:/var/log --name db"
-            img="mysql:sshd";;
+            args="-p 3306:3306 -p 8026:22 -v /home/wzhao/site_dbs/mysql:/var/lib/mysql --name db"
+            img="mysql";;
             #cmd='/bin/bash -c "service mysqld start && tail -f /var/log/mysqld.log"';;
         yuhuaw)
-            args="-p 8001:80 -p 8000:8000 -p 8023:22 --link db:db --link apollo:apollo -v /home/wzhao/www/yuhua:/var/www/yuhua -v /var/log/palmtao/yuhua/web:/var/log/httpd -v /etc/httpd/conf/yuhua:/etc/httpd/conf -v /home/wzhao/ds:/root/ds -v /mnt/courseware_yuhua:/mnt/courseware_yuhua"
+            path="/home/wzhao/sites/yuhua/www"
+            args="-p 443:443 -p 8000:8000 -p 8023:22 --link db:db --link apollo:apollo -v $path/www:/var/www -v $path/log:/var/log/httpd -v $path/etc:/etc/httpd/conf -v /home/wzhao/ds:/root/ds -v $path/www/courseware_doc:/mnt/courseware_doc"
             img="yuhua/web";;
         yuhuasync)
-            args="-p 8024:22 --link db:db --link apollo:apollo -v /home/wzhao/www/yuhua/bookbag:/var/lib/bookbag -v /home/wzhao/ds/yuhua_sync:/root/sync"
-            img="palmtao/syncd";;
+            args="-p 8024:22 --link db:db --link apollo:apollo -v /home/wzhao/sites/yuhua/www/www/bookbag:/var/lib/bookbag -v /home/wzhao/ds/yuhua_sync:/root/sync"
+            img="yuhua/sync";;
         yuhuamq)
-            args="-e JAVA_HOME=/usr/lib/jvm/jre-1.6.0 -p 61613:61613 -p 61614:61614 -p 61623:61623 -p 61624:61624 -p 61681:61681 -v /var/log/palmtao/yuhua/apollo:/var/lib/mybroker/log --name apollo"
-            img="palmtao/apollo:installed"
+            path="/home/wzhao/sites/yuhua/apollo"
+            args="-e JAVA_HOME=/usr/lib/jvm/jre-1.6.0 -p 61613:61613 -p 61614:61614 -p 61623:61623 -p 61624:61624 -p 61681:61681 -v $path/log:/var/lib/mybroker/log --name apollo"
+# -v $path/etc:/var/lib/mybroker/etc
+            img="apollo"
             cmd="/var/lib/mybroker/bin/apollo-broker run";;
         voicew)
             args="-p 8003:80 -p 8022:22 -v /home/wzhao/www/voice:/var/www/voice -v /var/log/palmtao/voice/web:/var/log/httpd -v /etc/httpd/conf/voice:/etc/httpd/conf -v /home/wzhao/ds:/root/ds"

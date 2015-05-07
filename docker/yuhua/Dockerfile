@@ -15,6 +15,4 @@ RUN pip install PIL --allow-unverified PIL --allow-all-external
 WORKDIR /root/packages/MySQL-python-1.2.5
 RUN python setup.py install
 
-RUN rm -rf /root/packages
-
 CMD httpd && /usr/sbin/sshd -D
