@@ -1,0 +1,12 @@
+FROM centos
+
+MAINTAINER Wei Zhao <wzhao@palmtao.com>
+
+RUN mkdir /data
+RUN mkdir /data/db
+RUN useradd mongod
+RUN chown -R mongod:mongod /data/db
+
+VOLUME /data/db
+
+CMD true

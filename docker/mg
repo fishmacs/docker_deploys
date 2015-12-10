@@ -1,0 +1,4 @@
+if [ -n "$1" ]; then
+  dk run -d --name mongo_data mongo_data
+fi
+dk run -d -p 27017:27017 --volumes-from mongo_data mongo
