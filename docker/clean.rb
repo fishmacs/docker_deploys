@@ -13,7 +13,7 @@ end
 # end
 
 targets = dockers.select do |d|
-  d[4] !~ /^Up/
+  d[1] !~ /_data$/ && d[4] !~ /^Up/
 end
 
 targets.each do |d|
