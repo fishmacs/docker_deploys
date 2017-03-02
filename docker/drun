@@ -54,6 +54,10 @@ else
             args="-p 25:25 --name smtp"
             img="smtp";;
             #cmd="service postfix start && tail -f /var/log/maillog";;
+        exam)
+            args="-p 8080:3000 --link mongo:mongo --link redis:redis -v /home/wzhao/www/exam:/var/www/exam"
+            img="nodejs"
+            cmd='bash -c "cd /var/www/exam && npm start"';;
         *)
             echo "Unknown image name: $1"
             exit;;
